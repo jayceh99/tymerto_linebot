@@ -23,12 +23,23 @@ def find_station_name(start_,end_):
 
 
 def search(start_station_number , end_station_number , time):
+    next_train = 86400
     f = open('C:\\Users\\jayce\\Desktop\\tymetro\\data\\'+start_station_number+'-'+end_station_number+'.txt')
     tmp  = str(f.read()).replace('\'','').replace(' ','').replace('[','').replace(']','').split(',')
-    
+    time = time[0]+time[1]+":"+time[2]+time[3]+":00"
+    time = datetime.strptime(time , "%H:%M:%S")
     for i in tmp:
         i = i.split(';')
-        print(i[2])
+        #print(i[2])
+        time2 = datetime.strptime(str(i[2])+":00", "%H:%M:%S")
+        time_3 = time2 - time
+        if int(time_3.seconds) < next_train:
+            next_train = int(time_3.seconds)
+            next_train_time = start_station_number+'-'+end_station_number+str(i)
+
+    print(next_train_time)
+
+        
 
 
 def test():
@@ -38,9 +49,9 @@ def test():
     time_interval = time_1 - time_2
     print(time_interval.seconds)
 def main():
-    start_station_number , start_station_name , end_station_number , end_station_name =  find_station_name('A1',"A2")
-    search(start_station_number=start_station_number , end_station_number=end_station_number , time = 'test')
-    test()
+    start_station_number , start_station_name , end_station_number , end_station_name =  find_station_name('A1',"A8")
+    search(start_station_number=start_station_number , end_station_number=end_station_number , time = '1730')
+
 
 
 if __name__ == "__main__":
