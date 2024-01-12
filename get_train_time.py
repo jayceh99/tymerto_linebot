@@ -22,22 +22,39 @@ def find_station_name(start_,end_):
     return start_station_number , start_station_name , end_station_number , end_station_name
 
 
-def search(start_station_number , end_station_number , time):
+def search(start_station_number , end_station_number , start_or_arriv_time):
     next_train = 86400
+    start_or_arrive = None
     f = open('C:\\Users\\jayce\\Desktop\\tymetro\\data\\'+start_station_number+'-'+end_station_number+'.txt')
-    tmp  = str(f.read()).replace('\'','').replace(' ','').replace('[','').replace(']','').split(',')
-    time = time[0]+time[1]+":"+time[2]+time[3]+":00"
-    time = datetime.strptime(time , "%H:%M:%S")
-    for i in tmp:
-        i = i.split(';')
+    all_trains  = str(f.read()).replace('\'','').replace(' ','').replace('[','').replace(']','').split(',')
+    if "!" in start_or_arriv_time:
+        start_or_arriv_time = start_or_arriv_time.replace('!' , '')
+        start_or_arrive = 1
+    elif "@" in start_or_arriv_time:
+        start_or_arriv_time = start_or_arriv_time.replace('@' , '')
+        start_or_arrive = 2
+    else :
+        print('exception')
+        quit()
+    start_or_arriv_time = start_or_arriv_time[0]+start_or_arriv_time[1]+":"+start_or_arriv_time[2]+start_or_arriv_time[3]+":00"
+  
+    start_or_arriv_time = datetime.strptime(start_or_arriv_time , "%H:%M:%S")
+
+    for i in range (0 , len(all_trains) ):
+        k = all_trains[i].split(';')
         #print(i[2])
-        time2 = datetime.strptime(str(i[2])+":00", "%H:%M:%S")
-        time_3 = time2 - time
+        time2 = datetime.strptime(str(k[start_or_arrive])+":00", "%H:%M:%S")
+        time_3 = time2 - start_or_arriv_time
         if int(time_3.seconds) < next_train:
             next_train = int(time_3.seconds)
-            next_train_time = start_station_number+'-'+end_station_number+str(i)
 
-    print(next_train_time)
+            tmp_next = i
+    next_train_time_1 = start_station_number+'-'+end_station_number+str(all_trains[tmp_next-1].split(';'))
+    next_train_time_2 = start_station_number+'-'+end_station_number+str(all_trains[tmp_next].split(';')) 
+    next_train_time_3 = start_station_number+'-'+end_station_number+str(all_trains[tmp_next+1].split(';'))
+    print(next_train_time_1)
+    print(next_train_time_2)
+    print(next_train_time_3)
 
         
 
@@ -49,8 +66,8 @@ def test():
     time_interval = time_1 - time_2
     print(time_interval.seconds)
 def main():
-    start_station_number , start_station_name , end_station_number , end_station_name =  find_station_name('A1',"A8")
-    search(start_station_number=start_station_number , end_station_number=end_station_number , time = '1730')
+    start_station_number , start_station_name , end_station_number , end_station_name =  find_station_name('A2',"A1")
+    search(start_station_number=start_station_number , end_station_number=end_station_number , start_or_arriv_time = '@1400')
 
 
 
