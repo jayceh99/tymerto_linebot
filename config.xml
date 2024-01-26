@@ -1,0 +1,6 @@
+<?xml version="1.0"?>
+<data>
+	<channel_secret>對應line bot 的 channel secret</channel_secret>
+	<channel_access_token>對應line bot 的 channel access token</channel_access_token>
+	<your_user_ID>對應line bot 的 your user ID</your_user_ID>
+</data>
