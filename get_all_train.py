@@ -3,7 +3,7 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import Select
 from lxml import html
 from datetime import datetime
-
+from selenium.webdriver import FirefoxOptions #for Firefox 
 
 class c_find_train:
     def __init__(self,start_,end_, start_or_arriv_time) -> None:
@@ -26,10 +26,17 @@ class c_find_train:
 
 
     def f_find_train(self):
-
+        '''
+        #for Edge
         option = webdriver.EdgeOptions()
         option.add_argument("headless")
         driver = webdriver.Edge(options=option)
+        '''
+        #for Firefox
+        option = FirefoxOptions()
+        option.add_argument("-headless")
+        driver = webdriver.Firefox(options=option)
+        
         driver.get('https://www.tymetro.com.tw/tymetro-new/tw/_pages/travel-guide/timetable-search.php')
         start_ = Select(driver.find_element(by = By.NAME, value='start_station'))
         start_.select_by_value(self.start_station_number)
@@ -82,9 +89,9 @@ class c_find_train:
                     tmp_i = i
 
         tmp_i = tmp_i + shift_tmp_i
-
-        print(self.start_station_name+' > '+self.end_station_name+'\n'+self.train_all_list[tmp_i+1]+' > '+self.train_all_list[tmp_i+2]+'\n'+\
+        txt = (self.start_station_name+' > '+self.end_station_name+'\n'+self.train_all_list[tmp_i+1]+' > '+self.train_all_list[tmp_i+2]+'\n'+\
               self.train_all_list[tmp_i+5]+' > '+self.train_all_list[tmp_i+6]+'\n'+self.train_all_list[tmp_i+9]+' > '+self.train_all_list[tmp_i+10])
+        return txt
             
     """
     def f_search(self):
@@ -129,7 +136,7 @@ def main():
     c_find_train_q = c_find_train(start_='北車' , end_= "A18" , start_or_arriv_time= '@1400')
     c_find_train_q.f_name_to_number()
     c_find_train_q.f_find_train()
-    c_find_train_q.f_test()
-    #c_find_train_q.f_search()
+    txt = c_find_train_q.f_test()
+    return txt
 if __name__ == "__main__":
     main()
