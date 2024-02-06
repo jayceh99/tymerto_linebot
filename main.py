@@ -20,7 +20,7 @@ element = xml.dom.minidom.parse(path)
 root = element.documentElement
 channel_secret =  root.getElementsByTagName('channel_secret')[0].firstChild.data
 channel_access_token =  root.getElementsByTagName('channel_access_token')[0].firstChild.data
-your_user_ID =  root.getElementsByTagName('your_user_ID')[0].firstChild.data
+
 
 
 line_bot_api = LineBotApi(channel_access_token)
