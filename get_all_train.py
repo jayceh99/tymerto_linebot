@@ -96,12 +96,12 @@ class c_find_train:
 def main(text_input):
     try:
         text_input = text_input.split(',')
-        c_find_train_q = c_find_train(start_=text_input[0] , end_= text_input[1] , start_or_arriv_time= text_input[2])
-        c_find_train_q.f_name_to_number()
-        c_find_train_q.f_find_train()
-        txt = c_find_train_q.f_test()
-        return txt
+        if '!' in text_input[2] or '@' in text_input[2]:
+            c_find_train_q = c_find_train(start_=text_input[0] , end_= text_input[1] , start_or_arriv_time= text_input[2])
+            c_find_train_q.f_name_to_number()
+            c_find_train_q.f_find_train()
+            txt = c_find_train_q.f_test()
+            return txt
+
     except:
-        return'輸入格式錯誤'
-if __name__ == "__main__":
-    main()
+        return'輸入格式錯誤,輸入?查看說明'
