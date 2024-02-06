@@ -11,8 +11,9 @@ class c_find_train:
         self.end_ = end_
         self.start_or_arriv_time = start_or_arriv_time
                   
-
     def f_name_to_number(self):
+        self.start_station_number = None
+        self.end_station_number = None
         name = {'A1台北車站':'1' , 'A2三重站':"2" , 'A3新北產業園區站':"3" , 'A4新莊副都心站':"4" , "A5泰山站":"5" , "A6泰山貴和站":"6" ,"A7體育大學站":"7" , 
             "A8長庚醫院站":"8" , "A9林口站":"9" , "A10山鼻站":"10" , "A11坑口站":'11' , "A12機場第一航廈站":'12' , "A13機場第二航廈站":"13" , "A14a機場旅館站":"15" ,
             "A15大園站":"16" , "A16橫山站":"17" , "A17領航站":"18" , "A18高鐵桃園站":"19" , "A19桃園體育園區站":"20" , "A20興南站":'21' , "A21環北站":'22' , "A22老街溪站":'23'}
@@ -26,6 +27,8 @@ class c_find_train:
 
 
     def f_find_train(self):
+        if self.start_station_number == None or self.end_station_number == None:
+            error_ = int('@')
         #for Edge
         '''
         option = webdriver.EdgeOptions()
@@ -66,13 +69,12 @@ class c_find_train:
             self.start_or_arriv_time = self.start_or_arriv_time.replace('!' , '')
             start_or_arrive = 1
             shift_tmp_i = -5
-        elif "@" in self.start_or_arriv_time:
+        else :
             self.start_or_arriv_time = self.start_or_arriv_time.replace('@' , '')
             start_or_arrive = 2
             shift_tmp_i = -6
-        else :
-            print('exception')
-            quit()
+
+            
         self.start_or_arriv_time = self.start_or_arriv_time[0]+self.start_or_arriv_time[1]+":"+self.start_or_arriv_time[2]+self.start_or_arriv_time[3]+":00"
         self.start_or_arriv_time = datetime.strptime(self.start_or_arriv_time , "%H:%M:%S")
 
@@ -102,6 +104,9 @@ def main(text_input):
             c_find_train_q.f_find_train()
             txt = c_find_train_q.f_test()
             return txt
+        else:
+            return'站名或格式錯誤,輸入?查看說明'
 
     except:
-        return'輸入格式錯誤,輸入?查看說明'
+        return'站名或格式錯誤,輸入?查看說明'
+    
