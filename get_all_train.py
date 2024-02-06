@@ -26,8 +26,8 @@ class c_find_train:
 
 
     def f_find_train(self):
-        '''
         #for Edge
+        '''
         option = webdriver.EdgeOptions()
         option.add_argument("headless")
         driver = webdriver.Edge(options=option)
@@ -92,51 +92,16 @@ class c_find_train:
         txt = (self.start_station_name+' > '+self.end_station_name+'\n'+self.train_all_list[tmp_i+1]+' > '+self.train_all_list[tmp_i+2]+'\n'+\
               self.train_all_list[tmp_i+5]+' > '+self.train_all_list[tmp_i+6]+'\n'+self.train_all_list[tmp_i+9]+' > '+self.train_all_list[tmp_i+10])
         return txt
-            
-    """
-    def f_search(self):
-        next_train = 86400
-        start_or_arrive = None
-        
-        if "!" in self.start_or_arriv_time:
-            self.start_or_arriv_time = self.start_or_arriv_time.replace('!' , '')
-            start_or_arrive = 1
-        elif "@" in self.start_or_arriv_time:
-            self.start_or_arriv_time = self.start_or_arriv_time.replace('@' , '')
-            start_or_arrive = 2
-        else :
-            print('exception')
-            quit()
-        self.start_or_arriv_time = self.start_or_arriv_time[0]+self.start_or_arriv_time[1]+":"+self.start_or_arriv_time[2]+self.start_or_arriv_time[3]+":00"
-        self.start_or_arriv_time = datetime.strptime(self.start_or_arriv_time , "%H:%M:%S")
 
-        for i in range (0 , len(self.train_list) ):
-            k = self.train_list[i].split(';')
-            #print(i[2])
-            time2 = datetime.strptime(str(k[start_or_arrive])+":00", "%H:%M:%S")
-            time_3 = time2 - self.start_or_arriv_time
-            if int(time_3.seconds) < next_train:
-                next_train = int(time_3.seconds)
-                tmp_next = i
-
-        previous_ = self.train_list[tmp_next-1].split(';')
-        now_ = self.train_list[tmp_next].split(';')
-        next_ = self.train_list[tmp_next+1].split(';')
-
-        next_train_time_1 = self.start_station_name+'- '+self.end_station_name+' 車種 : '+previous_[0]+' 出發時間 : '+previous_[1]+' 抵達時間 : '+previous_[2]+' 行駛時間 : '+previous_[3]
-        next_train_time_2 = self.start_station_name+'- '+self.end_station_name+' 車種 : '+now_[0]+' 出發時間 : '+now_[1]+' 抵達時間 : '+now_[2]+' 行駛時間 : '+now_[3]
-        next_train_time_3 = self.start_station_name+'- '+self.end_station_name+' 車種 : '+next_[0]+' 出發時間 : '+next_[1]+' 抵達時間 : '+next_[2]+' 行駛時間 : '+next_[3]
-        print(next_train_time_1)
-        print(next_train_time_2)
-        print(next_train_time_3)
-        print('起訖點: \n'+self.start_station_name+'- '+self.end_station_name+'\n車種 :\n'+previous_[0]+'\n'+now_[0]+'\n'+next_[0]+'\n出發時間 : \n'+\
-              previous_[1]+'\n'+now_[1]+'\n'+next_[1]+'\n抵達時間 : \n'+previous_[2]+'\n'+now_[2]+'\n'+next_[2]+'\n'+'行駛時間 :\n'+previous_[3]+'\n'+now_[3]+'\n'+next_[3])
-    """
-def main():
-    c_find_train_q = c_find_train(start_='北車' , end_= "A18" , start_or_arriv_time= '@1400')
-    c_find_train_q.f_name_to_number()
-    c_find_train_q.f_find_train()
-    txt = c_find_train_q.f_test()
-    return txt
+def main(text_input):
+    try:
+        text_input = text_input.split(',')
+        c_find_train_q = c_find_train(start_=text_input[0] , end_= text_input[1] , start_or_arriv_time= text_input[2])
+        c_find_train_q.f_name_to_number()
+        c_find_train_q.f_find_train()
+        txt = c_find_train_q.f_test()
+        return txt
+    except:
+        return'輸入格式錯誤'
 if __name__ == "__main__":
     main()
