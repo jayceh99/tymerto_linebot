@@ -62,6 +62,7 @@ class c_find_train:
             else:
                 txt = (train_list_all[a] +';'+ train_list_all[a+1] +';'+ train_list_all[a+2] +';'+ train_list_all[a+3])
                 self.train_list.append(txt)
+        driver.close()
     def f_test(self):
         next_train = 86400
         start_or_arrive = None
@@ -109,4 +110,5 @@ def main(text_input):
 
     except:
         return'站名或格式錯誤,輸入?查看說明'
-    
+    台北,高鐵,@1200
+    高鐵,台北,!1200
