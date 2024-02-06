@@ -50,7 +50,7 @@ def callback():
 def handle_message(event):
     input_text = event.message.text
     if '?' in input_text:
-        line_bot_api.reply_message(event.reply_token,TextSendMessage(text='請輸入 起點,終點,時間 (使用,分開)\ne.g.\nA8,高鐵,!1400\n表示A8長庚醫院站到A18桃園高鐵站且"出發時間"為14點整\nA8,高鐵,@1400\n表示A8長庚醫院站到A18桃園高鐵站且"抵達時間"為14點整'))
+        line_bot_api.reply_message(event.reply_token,TextSendMessage(text='請輸入 起點,終點,時間 (使用,分開)站名可使用代號或部分中文站名代表\ne.g.\nA8,高鐵,!1400\n表示A8長庚醫院站到A18桃園高鐵站且"出發時間"為14點整\nA8,高鐵,@1400\n表示A8長庚醫院站到A18桃園高鐵站且"抵達時間"為14點整'))
     else:
         line_bot_api.reply_message(event.reply_token,TextSendMessage(text=get_all_train.main(input_text)))
         
