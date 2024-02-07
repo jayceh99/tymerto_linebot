@@ -103,12 +103,15 @@ class c_find_train:
                     tmp_i = i
                 if next_train < 1800:
                     break
-
         tmp_i = tmp_i + self.shift_tmp_i
+
         if self.now_ == False:
             if tmp_i+9 > tmp_len :
                 txt = (self.start_station_name+' > '+self.end_station_name+'\n'+self.train_all_list[tmp_i+2]+' > '+self.train_all_list[tmp_i+3]+'\n'+\
                 self.train_all_list[tmp_i+5]+' > '+self.train_all_list[tmp_i+6]+'\n')
+            elif tmp_i+2 < 0:
+                txt = (self.start_station_name+' > '+self.end_station_name+'\n'+\
+                self.train_all_list[tmp_i+5]+' > '+self.train_all_list[tmp_i+6]+'\n'+self.train_all_list[tmp_i+8]+' > '+self.train_all_list[tmp_i+9])
             else:
                 txt = (self.start_station_name+' > '+self.end_station_name+'\n'+self.train_all_list[tmp_i+2]+' > '+self.train_all_list[tmp_i+3]+'\n'+\
                     self.train_all_list[tmp_i+5]+' > '+self.train_all_list[tmp_i+6]+'\n'+self.train_all_list[tmp_i+8]+' > '+self.train_all_list[tmp_i+9])
@@ -116,6 +119,9 @@ class c_find_train:
             if tmp_i+12 > tmp_len :
                 txt = (self.start_station_name+' > '+self.end_station_name+'\n'+self.train_all_list[tmp_i+5]+' > '+self.train_all_list[tmp_i+6]+'\n'+\
                     self.train_all_list[tmp_i+8]+' > '+self.train_all_list[tmp_i+9])
+            elif tmp_i+5 < 0:
+                txt = (self.start_station_name+' > '+self.end_station_name+'\n'+\
+                self.train_all_list[tmp_i+8]+' > '+self.train_all_list[tmp_i+9]+'\n'+self.train_all_list[tmp_i+11]+' > '+self.train_all_list[tmp_i+12])
             else:
                 txt = (self.start_station_name+' > '+self.end_station_name+'\n'+self.train_all_list[tmp_i+5]+' > '+self.train_all_list[tmp_i+6]+'\n'+\
                     self.train_all_list[tmp_i+8]+' > '+self.train_all_list[tmp_i+9]+'\n'+self.train_all_list[tmp_i+11]+' > '+self.train_all_list[tmp_i+12])
