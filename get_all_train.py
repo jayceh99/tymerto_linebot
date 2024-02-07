@@ -145,4 +145,3 @@ def main(text_input):
     except :
 
         return'站名或格式錯誤,輸入?查看說明'
-
