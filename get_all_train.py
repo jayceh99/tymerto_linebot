@@ -106,16 +106,27 @@ class c_find_train:
                     break
 
         tmp_i = tmp_i + self.shift_tmp_i
+        print(self.train_all_list[tmp_i+2])
+        print(self.train_all_list)
         if self.now_ == False:
-            txt = (self.start_station_name+' > '+self.end_station_name+'\n'+self.train_all_list[tmp_i+2]+' > '+self.train_all_list[tmp_i+3]+'\n'+\
-                self.train_all_list[tmp_i+5]+' > '+self.train_all_list[tmp_i+6]+'\n'+self.train_all_list[tmp_i+8]+' > '+self.train_all_list[tmp_i+9])
+            if tmp_i+9 > tmp_len :
+                txt = (self.start_station_name+' > '+self.end_station_name+'\n'+self.train_all_list[tmp_i+2]+' > '+self.train_all_list[tmp_i+3]+'\n'+\
+                self.train_all_list[tmp_i+5]+' > '+self.train_all_list[tmp_i+6]+'\n')
+            else:
+                txt = (self.start_station_name+' > '+self.end_station_name+'\n'+self.train_all_list[tmp_i+2]+' > '+self.train_all_list[tmp_i+3]+'\n'+\
+                    self.train_all_list[tmp_i+5]+' > '+self.train_all_list[tmp_i+6]+'\n'+self.train_all_list[tmp_i+8]+' > '+self.train_all_list[tmp_i+9])
         else :
-            txt = (self.start_station_name+' > '+self.end_station_name+'\n'+self.train_all_list[tmp_i+5]+' > '+self.train_all_list[tmp_i+6]+'\n'+\
-                self.train_all_list[tmp_i+8]+' > '+self.train_all_list[tmp_i+9]+'\n'+self.train_all_list[tmp_i+11]+' > '+self.train_all_list[tmp_i+12])
+            if tmp_i+12 > tmp_len :
+                txt = (self.start_station_name+' > '+self.end_station_name+'\n'+self.train_all_list[tmp_i+5]+' > '+self.train_all_list[tmp_i+6]+'\n'+\
+                    self.train_all_list[tmp_i+8]+' > '+self.train_all_list[tmp_i+9])
+            else:
+                txt = (self.start_station_name+' > '+self.end_station_name+'\n'+self.train_all_list[tmp_i+5]+' > '+self.train_all_list[tmp_i+6]+'\n'+\
+                    self.train_all_list[tmp_i+8]+' > '+self.train_all_list[tmp_i+9]+'\n'+self.train_all_list[tmp_i+11]+' > '+self.train_all_list[tmp_i+12])
+        
         return txt
 
 def main(text_input):
-    try:
+    #try:
         text_input = text_input.replace(' ','')
         if ',' in text_input:
             text_input = text_input.split(',')
@@ -134,7 +145,9 @@ def main(text_input):
         txt = c_find_train_q.f_test()
         return txt
     
-    except :
+    #except Exception as e:
+    #    print(e)
+    #    return'站名或格式錯誤,輸入?查看說明'
 
-        return'站名或格式錯誤,輸入?查看說明'
-
+if __name__ == "__main__":
+    print(main('A22,A1,!2300'))
