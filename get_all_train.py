@@ -28,9 +28,35 @@ class c_find_train:
                 break
 
 
-    def f_find_train(self):
+    def f_check_input(self):
         if self.start_station_number == None or self.end_station_number == None:
-            error_ = int('@')
+            int('@')
+        self.start_or_arrive = None
+        if "!" in self.start_or_arriv_time or '！' in self.start_or_arriv_time:
+            self.start_or_arriv_time = self.start_or_arriv_time.replace('!' , '').replace('！' , '')
+            self.start_or_arrive = 1
+            self.shift_tmp_i = -5
+            self.now_ = False
+        elif "@" in self.start_or_arriv_time or '＠' in self.start_or_arriv_time:
+            self.start_or_arriv_time = self.start_or_arriv_time.replace('@' , '').replace("＠" , '')
+            self.start_or_arrive = 2
+            self.shift_tmp_i = -6
+            self.now_ = False
+        elif '' in self.start_or_arriv_time:
+            self.start_or_arriv_time = datetime.now()
+            self.start_or_arriv_time = str(self.start_or_arriv_time.strftime("%H%M"))
+            self.start_or_arrive = 1
+            self.shift_tmp_i = -5
+            self.now_ = True
+        else:
+            int('@')
+
+        self.start_or_arriv_time = self.start_or_arriv_time[0]+self.start_or_arriv_time[1]+":"+self.start_or_arriv_time[2]+self.start_or_arriv_time[3]+":00"
+        self.start_or_arriv_time = datetime.strptime(self.start_or_arriv_time , "%H:%M:%S")
+
+
+    def f_find_train(self):
+        
         #for Edge
         
         option = webdriver.EdgeOptions()
@@ -53,28 +79,15 @@ class c_find_train:
         data = html.fromstring(driver.page_source)
         self.start_station_name = data.xpath("//li[@class='start']/text()")[0]
         self.end_station_name = data.xpath("//li[@class='end']/text()")[0]
-        #self.train_all_list = data.xpath("//table[@class='table table-hover table-bordered']/tbody/tr/td/text()")
         self.train_all_list = data.xpath("//td[@class='all_time']/text()")
         driver.close()
+
+
     def f_test(self):
         next_train = 86400
-        start_or_arrive = None
-        if "!" in self.start_or_arriv_time:
-            self.start_or_arriv_time = self.start_or_arriv_time.replace('!' , '')
-            start_or_arrive = 1
-            shift_tmp_i = -5
-        else :
-            self.start_or_arriv_time = self.start_or_arriv_time.replace('@' , '')
-            start_or_arrive = 2
-            shift_tmp_i = -6
-
-            
-        self.start_or_arriv_time = self.start_or_arriv_time[0]+self.start_or_arriv_time[1]+":"+self.start_or_arriv_time[2]+self.start_or_arriv_time[3]+":00"
-        self.start_or_arriv_time = datetime.strptime(self.start_or_arriv_time , "%H:%M:%S")
-        
         tmp_len = len(self.train_all_list)
         for i in range(0,tmp_len):
-            if i%3 == start_or_arrive :
+            if i%3 == self.start_or_arrive :
                 time2 = datetime.strptime(str(self.train_all_list[i])+":00", "%H:%M:%S")
                 time_3 = time2 - self.start_or_arriv_time
                 if int(time_3.seconds) < next_train:
@@ -83,23 +96,36 @@ class c_find_train:
                 if next_train < 1800:
                     break
 
-        tmp_i = tmp_i + shift_tmp_i
-        txt = (self.start_station_name+' > '+self.end_station_name+'\n'+self.train_all_list[tmp_i+2]+' > '+self.train_all_list[tmp_i+3]+'\n'+\
-              self.train_all_list[tmp_i+5]+' > '+self.train_all_list[tmp_i+6]+'\n'+self.train_all_list[tmp_i+8]+' > '+self.train_all_list[tmp_i+9])
+        tmp_i = tmp_i + self.shift_tmp_i
+        if self.now_ == False:
+            txt = (self.start_station_name+' > '+self.end_station_name+'\n'+self.train_all_list[tmp_i+2]+' > '+self.train_all_list[tmp_i+3]+'\n'+\
+                self.train_all_list[tmp_i+5]+' > '+self.train_all_list[tmp_i+6]+'\n'+self.train_all_list[tmp_i+8]+' > '+self.train_all_list[tmp_i+9])
+        else :
+            txt = (self.start_station_name+' > '+self.end_station_name+'\n'+self.train_all_list[tmp_i+5]+' > '+self.train_all_list[tmp_i+6]+'\n'+\
+                self.train_all_list[tmp_i+8]+' > '+self.train_all_list[tmp_i+9]+'\n'+self.train_all_list[tmp_i+11]+' > '+self.train_all_list[tmp_i+12])
         return txt
 
 def main(text_input):
     try:
-        text_input = text_input.split(',')
-        if '!' in text_input[2] or '@' in text_input[2]:
-            c_find_train_q = c_find_train(start_=text_input[0] , end_= text_input[1] , start_or_arriv_time= text_input[2])
-            c_find_train_q.f_name_to_number()
-            c_find_train_q.f_find_train()
-            txt = c_find_train_q.f_test()
-            return txt
-        else:
-            return'站名或格式錯誤,輸入?查看說明'
 
-    except:
+        if ',' in text_input:
+            text_input = text_input.split(',')
+        elif '，' in text_input:
+            text_input = text_input.split('，')
+        else:
+            int('@')
+
+        if len(text_input) == 2:
+            text_input.append('')
+
+        c_find_train_q = c_find_train(start_=text_input[0] , end_= text_input[1] , start_or_arriv_time= text_input[2])
+        c_find_train_q.f_name_to_number()
+        c_find_train_q.f_check_input()
+        c_find_train_q.f_find_train()
+        txt = c_find_train_q.f_test()
+        return txt
+    
+    except Exception :
+
         return'站名或格式錯誤,輸入?查看說明'
 
