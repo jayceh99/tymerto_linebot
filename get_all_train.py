@@ -42,21 +42,20 @@ class c_find_train:
             self.start_or_arrive = 1
             self.shift_tmp_i = -5
             self.now_ = False
-            print(1)
+
         elif "@" in self.start_or_arriv_time or '＠' in self.start_or_arriv_time:
             self.start_or_arriv_time = self.start_or_arriv_time.replace('@' , '').replace("＠" , '')
             self.start_or_arrive = 2
             self.shift_tmp_i = -6
             self.now_ = False
-            print(3)
+
         elif '%' in self.start_or_arriv_time:
             self.start_or_arriv_time = datetime.now()
             self.start_or_arriv_time = str(self.start_or_arriv_time.strftime("%H%M"))
             self.start_or_arrive = 1
             self.shift_tmp_i = -5
             self.now_ = True
-            print(2)
-        
+
         else:
             int('@')
 
@@ -106,8 +105,6 @@ class c_find_train:
                     break
 
         tmp_i = tmp_i + self.shift_tmp_i
-        print(self.train_all_list[tmp_i+2])
-        print(self.train_all_list)
         if self.now_ == False:
             if tmp_i+9 > tmp_len :
                 txt = (self.start_station_name+' > '+self.end_station_name+'\n'+self.train_all_list[tmp_i+2]+' > '+self.train_all_list[tmp_i+3]+'\n'+\
@@ -126,7 +123,7 @@ class c_find_train:
         return txt
 
 def main(text_input):
-    #try:
+    try:
         text_input = text_input.replace(' ','')
         if ',' in text_input:
             text_input = text_input.split(',')
@@ -145,9 +142,7 @@ def main(text_input):
         txt = c_find_train_q.f_test()
         return txt
     
-    #except Exception as e:
-    #    print(e)
-    #    return'站名或格式錯誤,輸入?查看說明'
+    except :
 
-if __name__ == "__main__":
-    print(main('A22,A1,!2300'))
+        return'站名或格式錯誤,輸入?查看說明'
+
