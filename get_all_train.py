@@ -14,10 +14,15 @@ class c_find_train:
     def f_name_to_number(self):
         self.start_station_number = None
         self.end_station_number = None
+
+        if 'a' in self.start_:
+            self.start_ =  self.start_.replace('a','A')
+        if 'a' in self.end_:
+            self.end_ = self.end_.replace('a','A')
         name = {'A1台北車站':'1' , 'A2三重站':"2" , 'A3新北產業園區站':"3" , 'A4新莊副都心站':"4" , "A5泰山站":"5" , "A6泰山貴和站":"6" ,"A7體育大學站":"7" , 
             "A8長庚醫院站":"8" , "A9林口站":"9" , "A10山鼻站":"10" , "A11坑口站":'11' , "A12機場第一航廈站":'12' , "A13機場第二航廈站":"13" , "A14a機場旅館站":"15" ,
             "A15大園站":"16" , "A16橫山站":"17" , "A17領航站":"18" , "A18高鐵桃園站":"19" , "A19桃園體育園區站":"20" , "A20興南站":'21' , "A21環北站":'22' , "A22老街溪站":'23'}
-        
+
         for i in name:
             if self.start_ in i:
                 self.start_station_number = name[i]
@@ -30,24 +35,28 @@ class c_find_train:
 
     def f_check_input(self):
         if self.start_station_number == None or self.end_station_number == None:
-            int('@')
+            int('!')
         self.start_or_arrive = None
         if "!" in self.start_or_arriv_time or '！' in self.start_or_arriv_time:
             self.start_or_arriv_time = self.start_or_arriv_time.replace('!' , '').replace('！' , '')
             self.start_or_arrive = 1
             self.shift_tmp_i = -5
             self.now_ = False
+            print(1)
         elif "@" in self.start_or_arriv_time or '＠' in self.start_or_arriv_time:
             self.start_or_arriv_time = self.start_or_arriv_time.replace('@' , '').replace("＠" , '')
             self.start_or_arrive = 2
             self.shift_tmp_i = -6
             self.now_ = False
-        elif '' in self.start_or_arriv_time:
+            print(3)
+        elif '%' in self.start_or_arriv_time:
             self.start_or_arriv_time = datetime.now()
             self.start_or_arriv_time = str(self.start_or_arriv_time.strftime("%H%M"))
             self.start_or_arrive = 1
             self.shift_tmp_i = -5
             self.now_ = True
+            print(2)
+        
         else:
             int('@')
 
@@ -107,16 +116,16 @@ class c_find_train:
 
 def main(text_input):
     try:
-
+        text_input = text_input.replace(' ','')
         if ',' in text_input:
             text_input = text_input.split(',')
         elif '，' in text_input:
             text_input = text_input.split('，')
         else:
-            int('@')
+            int('#')
 
         if len(text_input) == 2:
-            text_input.append('')
+            text_input.append('%')
 
         c_find_train_q = c_find_train(start_=text_input[0] , end_= text_input[1] , start_or_arriv_time= text_input[2])
         c_find_train_q.f_name_to_number()
@@ -125,7 +134,7 @@ def main(text_input):
         txt = c_find_train_q.f_test()
         return txt
     
-    except Exception :
+    except :
 
         return'站名或格式錯誤,輸入?查看說明'
 
