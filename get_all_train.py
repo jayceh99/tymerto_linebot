@@ -4,39 +4,41 @@ from selenium.webdriver.support.ui import Select
 from lxml import html
 from datetime import datetime
 from selenium.webdriver import FirefoxOptions #for Firefox 
-
 class c_find_train:
     def __init__(self,start_,end_, start_or_arriv_time) -> None:
         self.start_ = start_
         self.end_ = end_
         self.start_or_arriv_time = start_or_arriv_time
-                  
-    def f_name_to_number(self):
+        self.start_or_arrive = None
+        self.now_ = None
         self.start_station_number = None
         self.end_station_number = None
-
-        if 'a' in self.start_:
-            self.start_ =  self.start_.replace('a','A')
-        if 'a' in self.end_:
-            self.end_ = self.end_.replace('a','A')
-        name = {'A1台北車站':'1' , 'A2三重站':"2" , 'A3新北產業園區站':"3" , 'A4新莊副都心站':"4" , "A5泰山站":"5" , "A6泰山貴和站":"6" ,"A7體育大學站":"7" , 
-            "A8長庚醫院站":"8" , "A9林口站":"9" , "A10山鼻站":"10" , "A11坑口站":'11' , "A12機場第一航廈站":'12' , "A13機場第二航廈站":"13" , "A14a機場旅館站":"15" ,
-            "A15大園站":"16" , "A16橫山站":"17" , "A17領航站":"18" , "A18高鐵桃園站":"19" , "A19桃園體育園區站":"20" , "A20興南站":'21' , "A21環北站":'22' , "A22老街溪站":'23'}
-
-        for i in name:
-            if self.start_ in i:
-                self.start_station_number = name[i]
-                break
-        for i in name:
-            if self.end_ in i:
-                self.end_station_number = name[i]
-                break
-
-
+        self.start_station_express_check = False
+        self.end_station_express_check = False
+        self.car_type = None
+        self.car_type_time = None
+        self.start_station_name = None
+        self.end_station_name = None
+        self.train_all_list = None
+        self.last_train = False
+        
     def f_check_input(self):
-        if self.start_station_number == None or self.end_station_number == None:
+        if '#' in self.start_[0] or '＃' in self.start_[0]:
+            self.car_type = '2'
+            self.car_type_time = '04:00'
+            self.start_ = self.start_.replace('#','').replace('＃','')
+            self.f_name_to_number()
+            self.f_check_express_train()
+            if self.start_station_express_check == False or self.end_station_express_check == False:
+                int('^')
+        else:
+            self.car_type = ''
+            self.car_type_time = ''
+            self.f_name_to_number()
+
+        if self.start_station_number == None or self.end_station_number == None or self.start_station_number == self.end_station_number :
             int('!')
-        self.start_or_arrive = None
+        
         if "!" in self.start_or_arriv_time or '！' in self.start_or_arriv_time:
             self.start_or_arriv_time = self.start_or_arriv_time.replace('!' , '').replace('！' , '')
             self.start_or_arrive = 1
@@ -63,10 +65,45 @@ class c_find_train:
         self.start_or_arriv_time = datetime.strptime(self.start_or_arriv_time , "%H:%M:%S")
 
 
+    def f_name_to_number(self):
+        
+        if 'a' in self.start_:
+            self.start_ =  self.start_.replace('a','A')
+        if 'a' in self.end_:
+            self.end_ = self.end_.replace('a','A')
+        name = {'A1台北車站':'1' , 'A2三重站':"2" , 'A3新北產業園區站':"3" , 'A4新莊副都心站':"4" , "A5泰山站":"5" , "A6泰山貴和站":"6" ,"A7體育大學站":"7" , 
+            "A8長庚醫院站":"8" , "A9林口站":"9" , "A10山鼻站":"10" , "A11坑口站":'11' , "A12機場第一航廈站":'12' , "A13機場第二航廈站":"13" , "A14a機場旅館站":"15" ,
+            "A15大園站":"16" , "A16橫山站":"17" , "A17領航站":"18" , "A18高鐵桃園站":"19" , "A19桃園體育園區站":"20" , "A20興南站":'21' , "A21環北站":'22' , "A22老街溪站":'23'}
+
+        for i in name:
+            if self.start_ in i:
+                self.start_station_number = name[i]
+                
+                break
+        for i in name:
+            if self.end_ in i:
+                self.end_station_number = name[i]
+                
+                break
+
+
+    def f_check_express_train(self):
+        
+        name = {'A1台北車站':'1' , 'A3新北產業園區站':"3" , "A8長庚醫院站":"8" , "A12機場第一航廈站":'12' , "A13機場第二航廈站":"13" , "A18高鐵桃園站":"19" , "A21環北站":'22' }
+        for i in name:
+            if self.start_station_number == name[i]:
+                self.start_station_express_check = True
+                break
+        for i in name:
+            if self.end_station_number == name[i]:
+                self.end_station_express_check = True
+                break
+
+
     def f_find_train(self):
         
         #for Edge
-        
+        '''
         option = webdriver.EdgeOptions()
         option.add_argument("headless")
         driver = webdriver.Edge(options=option)
@@ -76,8 +113,14 @@ class c_find_train:
         option = FirefoxOptions()
         option.add_argument("-headless")
         driver = webdriver.Firefox(options=option)
-        '''
+        
         driver.get('https://www.tymetro.com.tw/tymetro-new/tw/_pages/travel-guide/timetable-search.php')
+
+
+        car_type_select = Select(driver.find_element(by = By.NAME, value='car_type'))
+        car_type_select.select_by_value(self.car_type)
+        car_type_time_select = Select(driver.find_element(by = By.NAME, value='gotime'))
+        car_type_time_select.select_by_value(self.car_type_time)
         start_ = Select(driver.find_element(by = By.NAME, value='start_station'))
         start_.select_by_value(self.start_station_number)
         end_ = Select(driver.find_element(by = By.NAME, value='end_station'))
@@ -88,7 +131,7 @@ class c_find_train:
         self.start_station_name = data.xpath("//li[@class='start']/text()")[0]
         self.end_station_name = data.xpath("//li[@class='end']/text()")[0]
         self.train_all_list = data.xpath("//td[@class='all_time']/text()")
-        driver.close()
+        #driver.close()
 
 
     def f_search(self):
@@ -101,26 +144,43 @@ class c_find_train:
                 if int(time_3.seconds) < next_train:
                     next_train = int(time_3.seconds)
                     tmp_i = i
+
                 if next_train < 1800:
                     break
+        if next_train > 3600:
+            self.last_train = True
+                    
         tmp_i = tmp_i + self.shift_tmp_i
+        if self.last_train == True:
+            txt = self.start_station_name+' > '+self.end_station_name+'\n'+self.train_all_list[tmp_i+2]+' > '+self.train_all_list[tmp_i+3]+' '+self.train_all_list[tmp_i+1]
+            return  txt+'\n這班車是末班車！'
+        
         if self.now_ == False:
+
             if tmp_i+9 > tmp_len :
                 txt = (self.start_station_name+' > '+self.end_station_name+'\n'+self.train_all_list[tmp_i+2]+' > '+self.train_all_list[tmp_i+3]+' '+self.train_all_list[tmp_i+1]+'\n'+\
                 self.train_all_list[tmp_i+5]+' > '+self.train_all_list[tmp_i+6]+' '+self.train_all_list[tmp_i+4]+'\n')
+
             elif tmp_i+2 < 0:
                 txt = (self.start_station_name+' > '+self.end_station_name+'\n'+\
                 self.train_all_list[tmp_i+5]+' > '+self.train_all_list[tmp_i+6]+' '+self.train_all_list[tmp_i+4]+'\n'+self.train_all_list[tmp_i+8]+' > '+self.train_all_list[tmp_i+9]+' '+self.train_all_list[tmp_i+7])
+
             else:
                 txt = (self.start_station_name+' > '+self.end_station_name+'\n'+self.train_all_list[tmp_i+2]+' > '+self.train_all_list[tmp_i+3]+' '+self.train_all_list[tmp_i+1]+'\n'+\
                     self.train_all_list[tmp_i+5]+' > '+self.train_all_list[tmp_i+6]+' '+self.train_all_list[tmp_i+4]+'\n'+self.train_all_list[tmp_i+8]+' > '+self.train_all_list[tmp_i+9]+' '+self.train_all_list[tmp_i+7])
         else :
             if tmp_i+12 > tmp_len :
-                txt = (self.start_station_name+' > '+self.end_station_name+'\n'+self.train_all_list[tmp_i+5]+' > '+self.train_all_list[tmp_i+6]+' '+self.train_all_list[tmp_i+4]+'\n'+\
+
+                if tmp_i+8 > tmp_len:
+                    txt = (self.start_station_name+' > '+self.end_station_name+'\n'+self.train_all_list[tmp_i+5]+' > '+self.train_all_list[tmp_i+6]+' '+self.train_all_list[tmp_i+4])
+                else:
+                    txt = (self.start_station_name+' > '+self.end_station_name+'\n'+self.train_all_list[tmp_i+5]+' > '+self.train_all_list[tmp_i+6]+' '+self.train_all_list[tmp_i+4]+'\n'+\
                     self.train_all_list[tmp_i+8]+' > '+self.train_all_list[tmp_i+9]+' '+self.train_all_list[tmp_i+7])
+                
             elif tmp_i+5 < 0:
                 txt = (self.start_station_name+' > '+self.end_station_name+'\n'+\
                 self.train_all_list[tmp_i+8]+' > '+self.train_all_list[tmp_i+9]+' '+self.train_all_list[tmp_i+7]+'\n'+self.train_all_list[tmp_i+11]+' > '+self.train_all_list[tmp_i+12]+' '+self.train_all_list[tmp_i+10])
+            
             else:
                 txt = (self.start_station_name+' > '+self.end_station_name+'\n'+self.train_all_list[tmp_i+5]+' > '+self.train_all_list[tmp_i+6]+' '+self.train_all_list[tmp_i+4]+'\n'+\
                     self.train_all_list[tmp_i+8]+' > '+self.train_all_list[tmp_i+9]+' '+self.train_all_list[tmp_i+7]+'\n'+self.train_all_list[tmp_i+11]+' > '+self.train_all_list[tmp_i+12]+' '+self.train_all_list[tmp_i+10])
@@ -129,7 +189,7 @@ class c_find_train:
 
 def main(text_input):
     try:
-        text_input = text_input.replace(' ','')
+        text_input = text_input.replace(' ','').replace("　",'')
         if ',' in text_input:
             text_input = text_input.split(',')
         elif '，' in text_input:
@@ -141,7 +201,6 @@ def main(text_input):
             text_input.append('%')
 
         c_find_train_q = c_find_train(start_=text_input[0] , end_= text_input[1] , start_or_arriv_time= text_input[2])
-        c_find_train_q.f_name_to_number()
         c_find_train_q.f_check_input()
         c_find_train_q.f_find_train()
         txt = c_find_train_q.f_search()
@@ -150,5 +209,5 @@ def main(text_input):
     except :
 
         return'站名或格式錯誤,輸入?查看說明'
-if __name__ == "__main__":
-    print(main('a1,a22,!2300'))
+#if __name__ == "__main__":
+#    print(main('#　12,8,@0600'))
