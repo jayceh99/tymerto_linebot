@@ -30,15 +30,18 @@ class c_find_train:
             self.f_name_to_number()
             self.f_check_express_train()
             if self.start_station_express_check == False or self.end_station_express_check == False:
-                int('^')
+                return '輸入的起點或終點站沒有直達車喔！'
         else:
             self.car_type = ''
             self.car_type_time = ''
             self.f_name_to_number()
 
-        if self.start_station_number == None or self.end_station_number == None or self.start_station_number == self.end_station_number :
-            int('!')
+        if self.start_station_number == None or self.end_station_number == None :
+            return '輸入的站名有誤喔！'
         
+        if self.start_station_number == self.end_station_number :
+            return '輸入的起點跟終點相同喔！'
+
         if "!" in self.start_or_arriv_time or '！' in self.start_or_arriv_time:
             self.start_or_arriv_time = self.start_or_arriv_time.replace('!' , '').replace('！' , '')
             self.start_or_arrive = 1
@@ -59,7 +62,7 @@ class c_find_train:
             self.now_ = True
 
         else:
-            int('@')
+            return '輸入的時間格式有錯喔！'
 
         self.start_or_arriv_time = self.start_or_arriv_time[0]+self.start_or_arriv_time[1]+":"+self.start_or_arriv_time[2]+self.start_or_arriv_time[3]+":00"
         self.start_or_arriv_time = datetime.strptime(self.start_or_arriv_time , "%H:%M:%S")
@@ -103,7 +106,7 @@ class c_find_train:
     def f_find_train(self):
         
         #for Edge
-        '''
+        
         option = webdriver.EdgeOptions()
         option.add_argument("headless")
         driver = webdriver.Edge(options=option)
@@ -113,10 +116,9 @@ class c_find_train:
         option = FirefoxOptions()
         option.add_argument("-headless")
         driver = webdriver.Firefox(options=option)
-        
+        '''
         driver.get('https://www.tymetro.com.tw/tymetro-new/tw/_pages/travel-guide/timetable-search.php')
-
-
+        
         car_type_select = Select(driver.find_element(by = By.NAME, value='car_type'))
         car_type_select.select_by_value(self.car_type)
         car_type_time_select = Select(driver.find_element(by = By.NAME, value='gotime'))
@@ -188,6 +190,7 @@ class c_find_train:
         return txt
 
 def main(text_input):
+    check_text = None
     try:
         text_input = text_input.replace(' ','').replace("　",'')
         if ',' in text_input:
@@ -201,7 +204,9 @@ def main(text_input):
             text_input.append('%')
 
         c_find_train_q = c_find_train(start_=text_input[0] , end_= text_input[1] , start_or_arriv_time= text_input[2])
-        c_find_train_q.f_check_input()
+        check_text = c_find_train_q.f_check_input()
+        if check_text != None:
+            return check_text
         c_find_train_q.f_find_train()
         txt = c_find_train_q.f_search()
         return txt
@@ -209,5 +214,5 @@ def main(text_input):
     except :
 
         return'站名或格式錯誤,輸入?查看說明'
-#if __name__ == "__main__":
-#    print(main('#　12,8,@0600'))
+if __name__ == "__main__":
+    print(main('#12,12,060'))
