@@ -62,7 +62,7 @@ class c_find_train:
             self.now_ = True
 
         else:
-            return '輸入的時間格式有錯喔！'
+            return '輸入的時間格式有錯喔！輸入?查看說明'
 
         self.start_or_arriv_time = self.start_or_arriv_time[0]+self.start_or_arriv_time[1]+":"+self.start_or_arriv_time[2]+self.start_or_arriv_time[3]+":00"
         self.start_or_arriv_time = datetime.strptime(self.start_or_arriv_time , "%H:%M:%S")
@@ -106,7 +106,7 @@ class c_find_train:
     def f_find_train(self):
         
         #for Edge
-        
+        '''
         option = webdriver.EdgeOptions()
         option.add_argument("headless")
         driver = webdriver.Edge(options=option)
@@ -116,7 +116,7 @@ class c_find_train:
         option = FirefoxOptions()
         option.add_argument("-headless")
         driver = webdriver.Firefox(options=option)
-        '''
+        
         driver.get('https://www.tymetro.com.tw/tymetro-new/tw/_pages/travel-guide/timetable-search.php')
         
         car_type_select = Select(driver.find_element(by = By.NAME, value='car_type'))
@@ -214,5 +214,5 @@ def main(text_input):
     except :
 
         return'站名或格式錯誤,輸入?查看說明'
-if __name__ == "__main__":
-    print(main('#12,12,060'))
+#if __name__ == "__main__":
+#    print(main('#12,12,060'))
