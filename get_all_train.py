@@ -133,7 +133,7 @@ class c_find_train:
         self.start_station_name = data.xpath("//li[@class='start']/text()")[0]
         self.end_station_name = data.xpath("//li[@class='end']/text()")[0]
         self.train_all_list = data.xpath("//td[@class='all_time']/text()")
-        #driver.close()
+        driver.close()
 
 
     def f_search(self):
@@ -145,7 +145,7 @@ class c_find_train:
                 time_3 = time2 - self.start_or_arriv_time
                 if int(time_3.seconds) < next_train:
                     next_train = int(time_3.seconds)
-                    tmp_i = i
+                    tmp_i = i~
 
                 if next_train < 1800:
                     break
