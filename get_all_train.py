@@ -149,7 +149,7 @@ class c_find_train:
 
                 if next_train < 1800:
                     break
-        if next_train > 3600:
+        if next_train > 10800:
             self.last_train = True
                     
         tmp_i = tmp_i + self.shift_tmp_i
