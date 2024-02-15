@@ -3,6 +3,7 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import Select
 from lxml import html
 from datetime import datetime
+from selenium.common.exceptions import TimeoutException
 from selenium.webdriver import FirefoxOptions #for Firefox 
 class c_find_train:
     def __init__(self,start_,end_, start_or_arriv_time) -> None:
@@ -106,19 +107,23 @@ class c_find_train:
     def f_find_train(self):
         
         #for Edge
-        '''
+        
         option = webdriver.EdgeOptions()
         option.add_argument("headless")
-        driver = webdriver.Edge(options=option)
+        driver = webdriver.Edge()
         
         #for Firefox
         '''
         option = FirefoxOptions()
         option.add_argument("-headless")
         driver = webdriver.Firefox(options=option)
-        
-        driver.get('https://www.tymetro.com.tw/tymetro-new/tw/_pages/travel-guide/timetable-search.php')
-        
+        '''
+        try :
+            driver.set_page_load_timeout(5)
+            driver.get('https://www.tymetro.com.tw/tymetro-new/tw/_pages/travel-guide/timetable-search.php')
+        except TimeoutException :
+            driver.close()
+            return '目前機捷的官網維護中，要等機捷維護完機器人才能繼續運作！'
         car_type_select = Select(driver.find_element(by = By.NAME, value='car_type'))
         car_type_select.select_by_value(self.car_type)
         car_type_time_select = Select(driver.find_element(by = By.NAME, value='gotime'))
@@ -207,12 +212,14 @@ def main(text_input):
         check_text = c_find_train_q.f_check_input()
         if check_text != None:
             return check_text
-        c_find_train_q.f_find_train()
+        check_text = c_find_train_q.f_find_train()
+        if check_text != None:
+            return check_text
         txt = c_find_train_q.f_search()
         return txt
-    
-    except :
-
+        
+    except  :
         return'站名或格式錯誤,輸入?查看說明'
+
 #if __name__ == "__main__":
-#    print(main('#12,12,060'))
+#    print(main('12,2'))
