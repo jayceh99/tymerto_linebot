@@ -34,7 +34,7 @@ class c_find_train:
                 return '輸入的起點或終點站沒有直達車喔！'
         else:
             self.car_type = ''
-            self.car_type_time = ''
+            self.car_type_time = '04:00'
             self.f_name_to_number()
 
         if self.start_station_number == None or self.end_station_number == None :
@@ -144,6 +144,7 @@ class c_find_train:
     def f_search(self):
         next_train = 86400
         tmp_len = len(self.train_all_list)
+        print(self.train_all_list)
         for i in range(0,tmp_len):
             if i%3 == self.start_or_arrive :
                 time2 = datetime.strptime(str(self.train_all_list[i])+":00", "%H:%M:%S")
@@ -151,7 +152,7 @@ class c_find_train:
                 if int(time_3.seconds) < next_train:
                     next_train = int(time_3.seconds)
                     tmp_i = i
-
+                    print(tmp_i)
                 if next_train < 1800:
                     break
         if next_train > 10800:
@@ -222,4 +223,4 @@ def main(text_input):
         return'站名或格式錯誤,輸入?查看說明'
 
 #if __name__ == "__main__":
-#    print(main('12,2'))
+    #print(main('A2,A17,!1830'))
