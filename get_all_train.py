@@ -121,30 +121,32 @@ class c_find_train:
         try :
             driver.set_page_load_timeout(5)
             driver.get('https://www.tymetro.com.tw/tymetro-new/tw/_pages/travel-guide/timetable-search.php')
+            car_type_select = Select(driver.find_element(by = By.NAME, value='car_type'))
+            car_type_select.select_by_value(self.car_type)
+            car_type_time_select = Select(driver.find_element(by = By.NAME, value='gotime'))
+            car_type_time_select.select_by_value(self.car_type_time)
+            start_ = Select(driver.find_element(by = By.NAME, value='start_station'))
+            start_.select_by_value(self.start_station_number)
+            end_ = Select(driver.find_element(by = By.NAME, value='end_station'))
+            end_.select_by_value(self.end_station_number)
+            submmit = driver.find_element(by = By.XPATH , value="//button[@class='btn btn-lg']")
+            submmit.click()
+            data = html.fromstring(driver.page_source)
+            self.start_station_name = data.xpath("//li[@class='start']/text()")[0]
+            self.end_station_name = data.xpath("//li[@class='end']/text()")[0]
+            self.train_all_list = data.xpath("//td[@class='all_time']/text()")
+            driver.close()
         except TimeoutException :
             driver.close()
             return '目前機捷的官網維護中，要等機捷維護完機器人才能繼續運作！'
-        car_type_select = Select(driver.find_element(by = By.NAME, value='car_type'))
-        car_type_select.select_by_value(self.car_type)
-        car_type_time_select = Select(driver.find_element(by = By.NAME, value='gotime'))
-        car_type_time_select.select_by_value(self.car_type_time)
-        start_ = Select(driver.find_element(by = By.NAME, value='start_station'))
-        start_.select_by_value(self.start_station_number)
-        end_ = Select(driver.find_element(by = By.NAME, value='end_station'))
-        end_.select_by_value(self.end_station_number)
-        submmit = driver.find_element(by = By.XPATH , value="//button[@class='btn btn-lg']")
-        submmit.click()
-        data = html.fromstring(driver.page_source)
-        self.start_station_name = data.xpath("//li[@class='start']/text()")[0]
-        self.end_station_name = data.xpath("//li[@class='end']/text()")[0]
-        self.train_all_list = data.xpath("//td[@class='all_time']/text()")
-        driver.close()
-
+        except Exception as e:
+            driver.close()
+            return '機器人好像出了點問題'
 
     def f_search(self):
         next_train = 86400
         tmp_len = len(self.train_all_list)
-        print(self.train_all_list)
+        #print(self.train_all_list)
         for i in range(0,tmp_len):
             if i%3 == self.start_or_arrive :
                 time2 = datetime.strptime(str(self.train_all_list[i])+":00", "%H:%M:%S")
@@ -152,7 +154,7 @@ class c_find_train:
                 if int(time_3.seconds) < next_train:
                     next_train = int(time_3.seconds)
                     tmp_i = i
-                    print(tmp_i)
+                    #print(tmp_i)
                 if next_train < 1800:
                     break
         if next_train > 10800:
@@ -223,4 +225,4 @@ def main(text_input):
         return'站名或格式錯誤,輸入?查看說明'
 
 #if __name__ == "__main__":
-    #print(main('A2,A17,!1830'))
+#    print(main('A2,A17,!1830'))
