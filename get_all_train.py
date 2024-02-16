@@ -108,18 +108,18 @@ class c_find_train:
         
         #for Edge
         
-        option = webdriver.EdgeOptions()
-        option.add_argument("headless")
-        driver = webdriver.Edge()
+        #option = webdriver.EdgeOptions()
+        #option.add_argument("headless")
+        #driver = webdriver.Edge()
         
         #for Firefox
-        '''
+        
         option = FirefoxOptions()
         option.add_argument("-headless")
         driver = webdriver.Firefox(options=option)
-        '''
+        
         try :
-            driver.set_page_load_timeout(5)
+            driver.set_page_load_timeout(10)
             driver.get('https://www.tymetro.com.tw/tymetro-new/tw/_pages/travel-guide/timetable-search.php')
             car_type_select = Select(driver.find_element(by = By.NAME, value='car_type'))
             car_type_select.select_by_value(self.car_type)
@@ -138,7 +138,7 @@ class c_find_train:
             driver.close()
         except TimeoutException :
             driver.close()
-            return '目前機捷的官網維護中，要等機捷維護完機器人才能繼續運作！'
+            return '機器人好像出了點問題，請再試一次'
         except Exception as e:
             driver.close()
             return '機器人好像出了點問題'
