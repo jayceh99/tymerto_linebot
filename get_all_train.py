@@ -5,6 +5,7 @@ from lxml import html
 from datetime import datetime
 from selenium.common.exceptions import TimeoutException
 from selenium.webdriver import FirefoxOptions #for Firefox 
+import back_data
 class c_find_train:
     def __init__(self,start_,end_, start_or_arriv_time) -> None:
         self.start_ = start_
@@ -82,12 +83,12 @@ class c_find_train:
         for i in name:
             if self.start_ in i:
                 self.start_station_number = name[i]
-                
+                self.start_station_name_backup = i
                 break
         for i in name:
             if self.end_ in i:
                 self.end_station_number = name[i]
-                
+                self.end_station_name_backup = i
                 break
 
 
@@ -110,17 +111,18 @@ class c_find_train:
         
         #option = webdriver.EdgeOptions()
         #option.add_argument("headless")
-        #driver = webdriver.Edge()
-        
+        driver = webdriver.Edge()
+        '''
         #for Firefox
         
         option = FirefoxOptions()
         option.add_argument("-headless")
         driver = webdriver.Firefox(options=option)
-        
+        '''
         try :
             driver.set_page_load_timeout(10)
             driver.get('https://www.tymetro.com.tw/tymetro-new/tw/_pages/travel-guide/timetable-search.php')
+            #driver.get('https://')
             car_type_select = Select(driver.find_element(by = By.NAME, value='car_type'))
             car_type_select.select_by_value(self.car_type)
             car_type_time_select = Select(driver.find_element(by = By.NAME, value='gotime'))
@@ -136,12 +138,14 @@ class c_find_train:
             self.end_station_name = data.xpath("//li[@class='end']/text()")[0]
             self.train_all_list = data.xpath("//td[@class='all_time']/text()")
             driver.close()
-        except TimeoutException :
-            driver.close()
-            return '機器人好像出了點問題，請再試一次'
+
         except Exception as e:
             driver.close()
-            return '機器人好像出了點問題'
+            self.start_station_name = self.start_station_name_backup
+            self.end_station_name = self.end_station_name_backup
+            self.train_all_list = back_data.f_back_data(self.start_station_number , self.end_station_number , self.car_type)
+            return '桃園捷運的伺服器目前不太正常\n這是快取資料僅供參考!\n\n'+self.f_search()
+
 
     def f_search(self):
         next_train = 86400
@@ -161,6 +165,7 @@ class c_find_train:
             self.last_train = True
                     
         tmp_i = tmp_i + self.shift_tmp_i
+
         if self.last_train == True:
             txt = self.start_station_name+' > '+self.end_station_name+'\n'+self.train_all_list[tmp_i+2]+' > '+self.train_all_list[tmp_i+3]+' '+self.train_all_list[tmp_i+1]
             return  txt+'\n這班車是末班車！'
@@ -225,4 +230,4 @@ def main(text_input):
         return'站名或格式錯誤,輸入?查看說明'
 
 #if __name__ == "__main__":
-#    print(main('A2,A17,!1830'))
+#    print(main('#A1,A8,@1830'))
