@@ -144,7 +144,7 @@ class c_find_train:
             self.start_station_name = self.start_station_name_backup
             self.end_station_name = self.end_station_name_backup
             self.train_all_list = back_data.f_back_data(self.start_station_number , self.end_station_number , self.car_type)
-            return '桃園捷運的伺服器目前不太正常\n這是快取資料僅供參考!\n\n'+self.f_search()
+            return '目前機器人查不到即時資料！\n這是快取資料僅供參考！\n\n'+self.f_search()
 
 
     def f_search(self):
