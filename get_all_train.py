@@ -44,19 +44,19 @@ class c_find_train:
         if self.start_station_number == self.end_station_number :
             return '輸入的起點跟終點相同喔！'
 
-        if "!" in self.start_or_arriv_time or '！' in self.start_or_arriv_time:
+        if self.start_or_arriv_time[0] == "!"  or  self.start_or_arriv_time[0] == '！' :
             self.start_or_arriv_time = self.start_or_arriv_time.replace('!' , '').replace('！' , '')
             self.start_or_arrive = 1
             self.shift_tmp_i = -5
             self.now_ = False
 
-        elif "@" in self.start_or_arriv_time or '＠' in self.start_or_arriv_time:
+        elif  self.start_or_arriv_time[0] == "@" or self.start_or_arriv_time[0] == '＠'  :
             self.start_or_arriv_time = self.start_or_arriv_time.replace('@' , '').replace("＠" , '')
             self.start_or_arrive = 2
             self.shift_tmp_i = -6
             self.now_ = False
 
-        elif '%' in self.start_or_arriv_time:
+        elif self.start_or_arriv_time[0] == '%' :
             self.start_or_arriv_time = datetime.now()
             self.start_or_arriv_time = str(self.start_or_arriv_time.strftime("%H%M"))
             self.start_or_arrive = 1
@@ -229,5 +229,5 @@ def main(text_input):
     except  :
         return'站名或格式錯誤,輸入?查看說明'
 
-#if __name__ == "__main__":
-#    print(main('#A1,A8,@1830'))
+if __name__ == "__main__":
+    print(main('#A1,A8,#'))
