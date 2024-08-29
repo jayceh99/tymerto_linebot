@@ -1,13 +1,13 @@
 
 def f_back_data(start_ , end_ , car_type):
 
-
+    #預先查詢功能 須搭 find_train_backup.py使用 並在get_all_train_train.py的f_find_train 裡面呼叫此功能
     if car_type == '2':
-        path = "C:\\Users\\jayce\\Desktop\\tymetro_linebot\\A"+start_+"-A"+end_+'ex.txt'
-        #path = "/home/jayce/tymrtro/tymetro_linebot/data/A"+start_+"-A"+end_+'ex.txt'
+        #path = "C:\\Users\\jayce\\Desktop\\tymetro_linebot\\A"+start_+"-A"+end_+'ex.txt'
+        path = "/home/jayce/tymrtro/tymetro_linebot/data/A"+start_+"-A"+end_+'ex.txt'
     else:
-        path = "C:\\Users\\jayce\\Desktop\\tymetro_linebot\\A"+start_+"-A"+end_+'.txt'
-        #path = "/home/jayce/tymrtro/tymetro_linebot/data/A"+start_+"-A"+end_+'.txt'
+        #path = "C:\\Users\\jayce\\Desktop\\tymetro_linebot\\A"+start_+"-A"+end_+'.txt'
+        path = "/home/jayce/tymrtro/tymetro_linebot/data/A"+start_+"-A"+end_+'.txt'
     data  = open(path)
     data_ = data.read().replace('[','').replace('\'' , '').replace(' ','').replace(']','').split(',')
     '''

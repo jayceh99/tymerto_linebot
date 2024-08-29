@@ -5,6 +5,7 @@ from lxml import html
 from datetime import datetime
 from selenium.common.exceptions import TimeoutException
 from selenium.webdriver import FirefoxOptions #for Firefox 
+import time 
 import back_data
 class c_find_train:
     def __init__(self,start_,end_, start_or_arriv_time) -> None:
@@ -59,6 +60,7 @@ class c_find_train:
         elif self.start_or_arriv_time[0] == '%' :
             self.start_or_arriv_time = datetime.now()
             self.start_or_arriv_time = str(self.start_or_arriv_time.strftime("%H%M"))
+            #self.start_or_arriv_time = '2315'
             self.start_or_arrive = 1
             self.shift_tmp_i = -5
             self.now_ = True
@@ -66,8 +68,9 @@ class c_find_train:
         else:
             return '輸入的時間格式有錯喔！輸入?查看說明'
 
-        self.start_or_arriv_time = self.start_or_arriv_time[0]+self.start_or_arriv_time[1]+":"+self.start_or_arriv_time[2]+self.start_or_arriv_time[3]+":00"
-        self.start_or_arriv_time = datetime.strptime(self.start_or_arriv_time , "%H:%M:%S")
+        #self.start_or_arriv_time = self.start_or_arriv_time[0]+self.start_or_arriv_time[1]+self.start_or_arriv_time[2]+self.start_or_arriv_time[3]
+        
+        self.start_or_arriv_time = datetime.strptime(self.start_or_arriv_time , "%H%M")
 
 
     def f_name_to_number(self):
@@ -83,7 +86,7 @@ class c_find_train:
         for i in name:
             if self.start_ in i:
                 self.start_station_number = name[i]
-                self.start_station_name_backup = i
+                self.start_station_name_backup = i    
                 break
         for i in name:
             if self.end_ in i:
@@ -106,23 +109,35 @@ class c_find_train:
 
 
     def f_find_train(self):
-        
-        #for Edge
-        
-        #option = webdriver.EdgeOptions()
-        #option.add_argument("headless")
-        driver = webdriver.Edge()
+
+        #預先查詢
+        self.start_station_name = self.start_station_name_backup
+        self.end_station_name = self.end_station_name_backup
+        self.train_all_list = back_data.f_back_data(self.start_station_number , self.end_station_number , self.car_type)
+    
+
+        return self.f_search()
+
+
+        #即時資訊
         '''
-        #for Firefox
+        #for Edge
+        option = webdriver.EdgeOptions()
+        option.add_argument("headless")
+        option.add_argument("-private")
+        driver = webdriver.Edge(options=option)
         
+        #for Firefox
         option = FirefoxOptions()
         option.add_argument("-headless")
+        option.add_argument("-private")
         driver = webdriver.Firefox(options=option)
-        '''
+        
         try :
+             
             driver.set_page_load_timeout(10)
             driver.get('https://www.tymetro.com.tw/tymetro-new/tw/_pages/travel-guide/timetable-search.php')
-            #driver.get('https://')
+            #driver.get('https://www.d')
             car_type_select = Select(driver.find_element(by = By.NAME, value='car_type'))
             car_type_select.select_by_value(self.car_type)
             car_type_time_select = Select(driver.find_element(by = By.NAME, value='gotime'))
@@ -132,40 +147,46 @@ class c_find_train:
             end_ = Select(driver.find_element(by = By.NAME, value='end_station'))
             end_.select_by_value(self.end_station_number)
             submmit = driver.find_element(by = By.XPATH , value="//button[@class='btn btn-lg']")
+            
             submmit.click()
+            
             data = html.fromstring(driver.page_source)
             self.start_station_name = data.xpath("//li[@class='start']/text()")[0]
             self.end_station_name = data.xpath("//li[@class='end']/text()")[0]
             self.train_all_list = data.xpath("//td[@class='all_time']/text()")
+            
             driver.close()
-
+            
         except Exception as e:
             driver.close()
             self.start_station_name = self.start_station_name_backup
             self.end_station_name = self.end_station_name_backup
             self.train_all_list = back_data.f_back_data(self.start_station_number , self.end_station_number , self.car_type)
-            return '目前機器人查不到即時資料！\n這是快取資料僅供參考！\n\n'+self.f_search()
-
-
+            #return '目前機器人查不到即時資料！\n這是快取資料僅供參考！\n\n'+self.f_search()
+       
+            return self.f_search()
+        '''
     def f_search(self):
+        
+        
         next_train = 86400
         tmp_len = len(self.train_all_list)
         #print(self.train_all_list)
         for i in range(0,tmp_len):
             if i%3 == self.start_or_arrive :
-                time2 = datetime.strptime(str(self.train_all_list[i])+":00", "%H:%M:%S")
+                time2 = datetime.strptime(str(self.train_all_list[i]), "%H:%M")
                 time_3 = time2 - self.start_or_arriv_time
                 if int(time_3.seconds) < next_train:
                     next_train = int(time_3.seconds)
                     tmp_i = i
                     #print(tmp_i)
                 if next_train < 1800:
+                    #print(next_train)
                     break
         if next_train > 10800:
             self.last_train = True
                     
         tmp_i = tmp_i + self.shift_tmp_i
-
         if self.last_train == True:
             txt = self.start_station_name+' > '+self.end_station_name+'\n'+self.train_all_list[tmp_i+2]+' > '+self.train_all_list[tmp_i+3]+' '+self.train_all_list[tmp_i+1]
             return  txt+'\n這班車是末班車！'
@@ -203,6 +224,7 @@ class c_find_train:
         return txt
 
 def main(text_input):
+    
     check_text = None
     try:
         text_input = text_input.replace(' ','').replace("　",'')
@@ -215,9 +237,10 @@ def main(text_input):
 
         if len(text_input) == 2:
             text_input.append('%')
-
+        
         c_find_train_q = c_find_train(start_=text_input[0] , end_= text_input[1] , start_or_arriv_time= text_input[2])
         check_text = c_find_train_q.f_check_input()
+        
         if check_text != None:
             return check_text
         check_text = c_find_train_q.f_find_train()
@@ -225,9 +248,12 @@ def main(text_input):
             return check_text
         txt = c_find_train_q.f_search()
         return txt
-        
+    
     except  :
         return'站名或格式錯誤,輸入?查看說明'
 
-if __name__ == "__main__":
-    print(main('#A1,A8,#'))
+#if __name__ == "__main__":
+
+ #   print(main('A2,A16,!2315'))
+
+
