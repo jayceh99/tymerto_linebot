@@ -5,9 +5,21 @@ from lxml import html
 from datetime import datetime
 from selenium.common.exceptions import TimeoutException
 from selenium.webdriver import FirefoxOptions #for Firefox 
+<<<<<<< HEAD
+import time
+def find_train_backup():
+    
+=======
+<<<<<<<< HEAD:get_all_train_backup.py
+import time
+def find_train_backup():
+    
+========
 #預先查詢功能 須放入crontab 定期更新快取資料
 def find_train_backup():
 
+>>>>>>>> 8f65827dccd8340d88cd2216373bce351709bba8:find_train_backup.py
+>>>>>>> 8f65827dccd8340d88cd2216373bce351709bba8
         start_number = ['1' , "2" , "3" , "4" ,"5" , "6" ,"7" , "8" , "9" , "10" , '11' , '12' , "13" , "15" ,"16" , "17" , "18" , "19" , "20" , '21' , '22' ,'23']
         end_number = ['1' , "2" , "3" , "4" ,"5" , "6" ,"7" , "8" , "9" , "10" , '11' , '12' , "13" , "15" ,"16" , "17" , "18" , "19" , "20" , '21' , '22' ,'23']
  
@@ -30,22 +42,57 @@ def find_train_backup():
             for j in end_number:
                     if i == j :
                         continue
+<<<<<<< HEAD
+                    try:
+                        driver.set_page_load_timeout(10)
+                        driver.get('https://www.tymetro.com.tw/tymetro-new/tw/_pages/travel-guide/timetable-search.php')
+=======
+<<<<<<<< HEAD:get_all_train_backup.py
+                    try:
+                        driver.set_page_load_timeout(10)
+                        driver.get('https://www.tymetro.com.tw/tymetro-new/tw/_pages/travel-guide/timetable-search.php')
+========
                   
                     driver.set_page_load_timeout(10)
                     driver.get('https://www.tymetro.com.tw/tymetro-new/tw/_pages/travel-guide/timetable-search.php')
+>>>>>>>> 8f65827dccd8340d88cd2216373bce351709bba8:find_train_backup.py
+>>>>>>> 8f65827dccd8340d88cd2216373bce351709bba8
 
-                    car_type_select = Select(driver.find_element(by = By.NAME, value='car_type'))
-                    car_type_select.select_by_value('')
-                    car_type_time_select = Select(driver.find_element(by = By.NAME, value='gotime'))
-                    car_type_time_select.select_by_value(car_type_time)
-                    start_ = Select(driver.find_element(by = By.NAME, value='start_station'))
-                    start_.select_by_value(i)
-                    end_ = Select(driver.find_element(by = By.NAME, value='end_station'))
-                    end_.select_by_value(j)
-                    submmit = driver.find_element(by = By.XPATH , value="//button[@class='btn btn-lg']")
-                    submmit.click()
-                    data = html.fromstring(driver.page_source)
+                        """ car_type_select = Select(driver.find_element(by = By.NAME, value='car_type'))
+                        car_type_select.select_by_value('')
+                        car_type_time_select = Select(driver.find_element(by = By.NAME, value='gotime'))
+                        car_type_time_select.select_by_value(car_type_time) """
+                        start_ = Select(driver.find_element(by = By.NAME, value='start_station'))
+                        start_.select_by_value(i)
+                        end_ = Select(driver.find_element(by = By.NAME, value='end_station'))
+                        end_.select_by_value(j)
+                        submmit = driver.find_element(by = By.XPATH , value="//button[@class='btn btn-lg']")
+                        submmit.click()
+                        data = html.fromstring(driver.page_source)
 
+<<<<<<< HEAD
+=======
+<<<<<<<< HEAD:get_all_train_backup.py
+>>>>>>> 8f65827dccd8340d88cd2216373bce351709bba8
+                        train_all_list = data.xpath("//td[@class='all_time']/text()")
+                        path =  '/home/jayce/tymrtro/tymetro_linebot/data/A'+i+'-A'+j+'.txt'
+                        f = open(path,'w')
+                        f.write(str(train_all_list))
+                        f.close()
+                        time.sleep(2)
+<<<<<<< HEAD
+                    except Exception :
+=======
+                    except Exception as e :
+                        print(str(e))
+>>>>>>> 8f65827dccd8340d88cd2216373bce351709bba8
+                        continue
+        #driver.close()
+        
+        """ for i in ex_start_number:
+<<<<<<< HEAD
+=======
+========
                     train_all_list = data.xpath("//td[@class='all_time']/text()")
                     path =  '/home/jayce/tymrtro/tymetro_linebot/data/A'+i+'-A'+j+'.txt'
                     f = open(path,'w')
@@ -55,6 +102,8 @@ def find_train_backup():
         #driver.close()
         
         for i in ex_start_number:
+>>>>>>>> 8f65827dccd8340d88cd2216373bce351709bba8:find_train_backup.py
+>>>>>>> 8f65827dccd8340d88cd2216373bce351709bba8
             for j in ex_end_number:
                     if i == j :
                         continue
@@ -79,8 +128,16 @@ def find_train_backup():
                     f = open(path,'w')
                     f.write(str(train_all_list))
                     f.close()
-
+ """
         driver.close()
+<<<<<<< HEAD
+    
+=======
+<<<<<<<< HEAD:get_all_train_backup.py
+    
+========
         
+>>>>>>>> 8f65827dccd8340d88cd2216373bce351709bba8:find_train_backup.py
+>>>>>>> 8f65827dccd8340d88cd2216373bce351709bba8
 if __name__ == '__main__':
     find_train_backup()
